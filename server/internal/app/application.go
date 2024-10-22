@@ -78,6 +78,7 @@ func (app *Application) registerRoutes() {
 			r.Post("/", tagHandler.Create)
 			r.Get("/", tagHandler.ReadAll)
 			r.Get("/{id}", tagHandler.Read)
+			r.Patch("/{id}", tagHandler.Update)
 			r.Delete("/{id}", tagHandler.Delete)
 		})
 	})

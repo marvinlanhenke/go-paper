@@ -43,6 +43,10 @@ func (r *tagRepository) ReadAll(ctx context.Context) ([]Tag, error) {
 	return tags, nil
 }
 
+func (r *tagRepository) Update(ctx context.Context, tag *Tag) error {
+	return r.DB.WithContext(ctx).Model(&Tag{}).Where("id = ?", tag.ID).Updates(tag).Error
+}
+
 func (r *tagRepository) Delete(ctx context.Context, tagID int) error {
 	var tag Tag
 

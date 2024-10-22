@@ -86,6 +86,40 @@ func (h *tagHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, tags)
 }
 
+func (h *tagHandler) Update(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		h.logger.Errorw("failed to convert id param", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var payload TagPayload
+
+	if err := utils.ReadJSON(w, r, &payload); err != nil {
+		h.logger.Errorw("failed to decode body", "error", err)
+		utils.JSONError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := utils.Validate.Struct(payload); err != nil {
+		h.logger.Errorw("failed to validate payload", "error", err)
+		utils.JSONError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	tag := &repository.Tag{ID: uint(id), Name: payload.Name}
+
+	if err := h.repository.Tags.Update(r.Context(), tag); err != nil {
+		h.logger.Errorw("failed to update tag", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, tag)
+}
+
 func (h *tagHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idParam)
