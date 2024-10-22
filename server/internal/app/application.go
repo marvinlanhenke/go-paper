@@ -12,21 +12,30 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/marvinlanhenke/go-paper/internal/handler"
+	"github.com/marvinlanhenke/go-paper/internal/model"
+	"github.com/marvinlanhenke/go-paper/internal/repository"
 	"go.uber.org/zap"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Application struct {
-	logger *zap.SugaredLogger
-	router *chi.Mux
-	server *http.Server
-	config *Config
+	logger     *zap.SugaredLogger
+	router     *chi.Mux
+	server     *http.Server
+	repository *repository.Repository
+	config     *Config
 }
 
-func NewApplication(logger *zap.SugaredLogger, config *Config) *Application {
+func NewApplication(logger *zap.SugaredLogger, config *Config) (*Application, error) {
 	app := &Application{
 		logger: logger,
 		router: chi.NewRouter(),
 		config: config,
+	}
+
+	if err := app.setupDB(); err != nil {
+		return nil, err
 	}
 
 	app.router.Use(middleware.RequestID)
@@ -37,7 +46,23 @@ func NewApplication(logger *zap.SugaredLogger, config *Config) *Application {
 
 	app.registerRoutes()
 
-	return app
+	return app, nil
+}
+
+func (app *Application) setupDB() error {
+	db, err := gorm.Open(postgres.Open(app.config.db.addr), &gorm.Config{})
+	if err != nil {
+		app.logger.Errorw("error initializing database", "error", err)
+		return err
+	}
+	if err := db.AutoMigrate(&model.Tag{}); err != nil {
+		app.logger.Errorw("error migrating database", "error", err)
+		return err
+	}
+
+	app.repository = repository.New(db)
+
+	return nil
 }
 
 func (app *Application) registerRoutes() {

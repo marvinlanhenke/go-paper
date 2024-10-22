@@ -13,7 +13,10 @@ func main() {
 		logger.Warnw("error while loading .env", "error", err)
 	}
 
-	app := app.NewApplication(logger, app.NewConfig())
+	app, err := app.NewApplication(logger, app.NewConfig())
+	if err != nil {
+		logger.Fatalw("error while initializing application", "error", err)
+	}
 
 	app.Run()
 }
