@@ -130,3 +130,46 @@ func TestUpdatePaperHandler(t *testing.T) {
 	require.Equal(t, http.StatusOK, rr.Code, "expected %v, instead got %v", http.StatusOK, rr.Code)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
+
+func TestReadPaperHandler(t *testing.T) {
+	db, mock, paperHandler := createFixture(t)
+	defer db.Close()
+
+	existingPaper := &repository.Paper{
+		ID:          1,
+		Title:       "Original Title",
+		Description: "Original Description",
+		URL:         "http://original.com",
+		IsRead:      false,
+	}
+
+	mock.ExpectQuery(`SELECT .* FROM "papers" WHERE "papers"."id" = \$1`).
+		WithArgs(existingPaper.ID, 1).
+		WillReturnRows(sqlmock.NewRows([]string{
+			"id", "title", "description", "url", "is_read", "created_at", "updated_at", "deleted_at",
+		}).AddRow(
+			existingPaper.ID,
+			existingPaper.Title,
+			existingPaper.Description,
+			existingPaper.URL,
+			existingPaper.IsRead,
+			existingPaper.CreatedAt,
+			existingPaper.UpdatedAt,
+			existingPaper.DeletedAt,
+		))
+
+	r := chi.NewRouter()
+	r.Route("/v1/papers/{id}", func(r chi.Router) {
+		r.Use(paperHandler.WithPaperContext)
+		r.Get("/", paperHandler.Read)
+	})
+	rr := httptest.NewRecorder()
+
+	req, err := http.NewRequest(http.MethodGet, "/v1/papers/1", nil)
+	require.NoError(t, err, "failed to create HTTP request")
+
+	r.ServeHTTP(rr, req)
+
+	require.Equal(t, http.StatusOK, rr.Code, "expected %v, instead got %v", http.StatusOK, rr.Code)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
