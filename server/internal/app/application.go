@@ -83,6 +83,7 @@ func (app *Application) registerRoutes() {
 
 				r.Get("/", paperHandler.Read)
 				r.Patch("/", paperHandler.Update)
+				r.Delete("/", paperHandler.Delete)
 			})
 		})
 	})

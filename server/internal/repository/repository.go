@@ -12,6 +12,7 @@ type Repository struct {
 		Read(context.Context, int) (*Paper, error)
 		ReadAll(context.Context) ([]Paper, error)
 		Update(context.Context, *Paper) error
+		Delete(context.Context, *Paper) error
 	}
 }
 

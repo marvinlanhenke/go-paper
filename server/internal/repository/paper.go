@@ -15,6 +15,7 @@ type Paper struct {
 	IsRead      bool      `json:"is_read" gorm:"default:false"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+	DeletedAt   time.Time `json:"deleted_at"`
 }
 
 type paperRepository struct {
@@ -47,4 +48,8 @@ func (r *paperRepository) ReadAll(ctx context.Context) ([]Paper, error) {
 
 func (r *paperRepository) Update(ctx context.Context, paper *Paper) error {
 	return r.DB.WithContext(ctx).Model(&Paper{}).Where("id = ?", paper.ID).Updates(paper).Error
+}
+
+func (r *paperRepository) Delete(ctx context.Context, paper *Paper) error {
+	return r.DB.WithContext(ctx).Delete(paper).Error
 }

@@ -119,6 +119,18 @@ func (h *paperHandler) Update(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, paper)
 }
 
+func (h *paperHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	paper := getPaperFromCtx(r)
+
+	if err := h.repository.Papers.Delete(r.Context(), paper); err != nil {
+		h.logger.Errorw("failed to delete entity", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusNoContent, nil)
+}
+
 func (h *paperHandler) WithPaperContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		idParam := chi.URLParam(r, "id")
