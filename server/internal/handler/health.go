@@ -8,16 +8,20 @@ import (
 )
 
 type healthCheckHandler struct {
-	logger *zap.SugaredLogger
+	logger  *zap.SugaredLogger
+	env     string
+	version string
 }
 
-func NewHealthCheckHandler(logger *zap.SugaredLogger) *healthCheckHandler {
-	return &healthCheckHandler{logger: logger}
+func NewHealthCheckHandler(logger *zap.SugaredLogger, env, version string) *healthCheckHandler {
+	return &healthCheckHandler{logger: logger, env: env, version: version}
 }
 
 func (h *healthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
-		"status": "ok",
+		"status":      "ok",
+		"environment": h.env,
+		"version":     h.version,
 	}
 
 	type envelope struct {

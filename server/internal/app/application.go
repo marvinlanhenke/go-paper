@@ -33,6 +33,7 @@ func NewApplication(logger *zap.SugaredLogger, config *Config) *Application {
 	app.router.Use(middleware.RealIP)
 	app.router.Use(middleware.Logger)
 	app.router.Use(middleware.Recoverer)
+	app.router.Use(middleware.Timeout(time.Second * 60))
 
 	app.registerRoutes()
 
@@ -40,7 +41,10 @@ func NewApplication(logger *zap.SugaredLogger, config *Config) *Application {
 }
 
 func (app *Application) registerRoutes() {
-	healthCheckHandler := handler.NewHealthCheckHandler(app.logger)
+	env := app.config.env
+	version := app.config.version
+
+	healthCheckHandler := handler.NewHealthCheckHandler(app.logger, env, version)
 
 	app.router.Route("/v1", func(r chi.Router) {
 		r.Get("/health", healthCheckHandler.ServeHTTP)
