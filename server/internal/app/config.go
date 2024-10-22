@@ -1,9 +1,13 @@
 package app
 
+import "github.com/marvinlanhenke/go-paper/internal/utils"
+
 type Config struct {
 	addr string
 }
 
-func NewConfig(addr string) *Config {
+func NewConfig() *Config {
+	addr := utils.GetString("ADDR", ":8080")
+
 	return &Config{addr: addr}
 }
