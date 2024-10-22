@@ -22,8 +22,6 @@ services:
       - "8080:8080"
     environment:
       - ENV=development
-      - VERSION=0.0.1
-      - ADDR=:8080
       - DB_ADDR=postgres://admin:admin@db:5432/gopaper?sslmode=disable
 
 volumes:
