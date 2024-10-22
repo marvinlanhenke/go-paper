@@ -29,16 +29,16 @@ type UpdatePaperPayload struct {
 	IsRead      *bool   `json:"is_read"`
 }
 
-type paperHandler struct {
+type PaperHandler struct {
 	logger     *zap.SugaredLogger
 	repository *repository.Repository
 }
 
-func NewPaperHandler(logger *zap.SugaredLogger, repository *repository.Repository) *paperHandler {
-	return &paperHandler{logger: logger, repository: repository}
+func NewPaperHandler(logger *zap.SugaredLogger, repository *repository.Repository) *PaperHandler {
+	return &PaperHandler{logger: logger, repository: repository}
 }
 
-func (h *paperHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *PaperHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var payload CreatePaperPayload
 
 	if err := utils.ReadJSON(w, r, &payload); err != nil {
@@ -64,12 +64,12 @@ func (h *paperHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusCreated, paper)
 }
 
-func (h *paperHandler) Read(w http.ResponseWriter, r *http.Request) {
+func (h *PaperHandler) Read(w http.ResponseWriter, r *http.Request) {
 	paper := getPaperFromCtx(r)
 	utils.JSONResponse(w, http.StatusOK, paper)
 }
 
-func (h *paperHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
+func (h *PaperHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
 	papers, err := h.repository.Papers.ReadAll(r.Context())
 	if err != nil {
 		h.logger.Errorw("failed to read all entities", "error", err)
@@ -80,7 +80,7 @@ func (h *paperHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, papers)
 }
 
-func (h *paperHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *PaperHandler) Update(w http.ResponseWriter, r *http.Request) {
 	paper := getPaperFromCtx(r)
 
 	var payload UpdatePaperPayload
@@ -119,7 +119,7 @@ func (h *paperHandler) Update(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, paper)
 }
 
-func (h *paperHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *PaperHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	paper := getPaperFromCtx(r)
 
 	if err := h.repository.Papers.Delete(r.Context(), paper); err != nil {
@@ -131,7 +131,7 @@ func (h *paperHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusNoContent, nil)
 }
 
-func (h *paperHandler) WithPaperContext(next http.Handler) http.Handler {
+func (h *PaperHandler) WithPaperContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		idParam := chi.URLParam(r, "id")
 		id, err := strconv.Atoi(idParam)

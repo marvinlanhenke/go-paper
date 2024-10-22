@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -16,10 +17,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestCreatePaperHandler(t *testing.T) {
+func createFixture(t *testing.T) (*sql.DB, sqlmock.Sqlmock, *handler.PaperHandler) {
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err, "expected no error, instead got %v", err)
-	defer db.Close()
 
 	gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: db}), &gorm.Config{})
 	require.NoError(t, err, "expected no error, instead got %v", err)
@@ -27,6 +27,13 @@ func TestCreatePaperHandler(t *testing.T) {
 	repository := repository.New(gormDB)
 	logger := zap.NewNop().Sugar()
 	paperHandler := handler.NewPaperHandler(logger, repository)
+
+	return db, mock, paperHandler
+}
+
+func TestCreatePaperHandler(t *testing.T) {
+	db, mock, paperHandler := createFixture(t)
+	defer db.Close()
 
 	payload := handler.CreatePaperPayload{
 		Title:       "Test Paper",
