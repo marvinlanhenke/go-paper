@@ -3,6 +3,7 @@ module github.com/marvinlanhenke/go-paper
 go 1.23.2
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-chi/chi/v5 v5.1.0 // indirect

@@ -22,9 +22,5 @@ func (h *healthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		"version":     h.version,
 	}
 
-	type envelope struct {
-		Data any `json:"data"`
-	}
-
-	utils.JSONResponse(w, http.StatusOK, &envelope{data})
+	utils.JSONResponse(w, http.StatusOK, data)
 }

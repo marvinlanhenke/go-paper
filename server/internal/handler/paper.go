@@ -56,8 +56,8 @@ func (h *paperHandler) Create(w http.ResponseWriter, r *http.Request) {
 	paper := &repository.Paper{Title: payload.Title, Description: payload.Description, URL: payload.URL}
 
 	if err := h.repository.Papers.Create(r.Context(), paper); err != nil {
-		h.logger.Errorw("failed to create tag", "error", err)
-		utils.JSONError(w, http.StatusBadRequest, err.Error())
+		h.logger.Errorw("failed to create entity", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
