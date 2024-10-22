@@ -76,6 +76,7 @@ func (app *Application) registerRoutes() {
 
 		r.Route("/tags", func(r chi.Router) {
 			r.Post("/", tagHandler.Create)
+			r.Delete("/{id}", tagHandler.Delete)
 		})
 	})
 }

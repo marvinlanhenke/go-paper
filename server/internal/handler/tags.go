@@ -2,10 +2,13 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/marvinlanhenke/go-paper/internal/repository"
 	"github.com/marvinlanhenke/go-paper/internal/utils"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type TagPayload struct {
@@ -45,4 +48,28 @@ func (h *tagHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.JSONResponse(w, http.StatusCreated, tag)
+}
+
+func (h *tagHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		h.logger.Errorw("failed to convert id param", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := h.repository.Tags.Delete(r.Context(), id); err != nil {
+		h.logger.Errorw("failed to delete tag", "error", err)
+
+		if err == gorm.ErrRecordNotFound {
+			utils.JSONError(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

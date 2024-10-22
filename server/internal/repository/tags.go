@@ -20,5 +20,21 @@ type tagRepository struct {
 }
 
 func (r *tagRepository) Create(ctx context.Context, tag *Tag) error {
-	return r.DB.Create(tag).Error
+	return r.DB.WithContext(ctx).Create(tag).Error
+}
+
+func (r *tagRepository) Delete(ctx context.Context, tagID int) error {
+	var tag Tag
+
+	db := r.DB.WithContext(ctx)
+
+	if err := db.First(&tag, tagID).Error; err != nil {
+		return err
+	}
+
+	if err := db.Delete(&tag).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
