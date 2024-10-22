@@ -15,14 +15,17 @@ export interface CreatePaper {
   url: string;
 }
 
-export interface Paper extends CreatePaper {
-  id: number;
+export interface UpdatePaper extends CreatePaper {
   is_read: boolean;
+}
+
+export interface Paper extends UpdatePaper {
+  id: number;
 }
 
 export const getPapers = () => api.get("/papers");
 export const getPaperById = (id: number) => api.get(`/papers/${id}`);
 export const createPaper = (data: CreatePaper) => api.post("/papers", data);
-export const updatePaper = (id: number, data: Paper) =>
+export const updatePaper = (id: number, data: UpdatePaper) =>
   api.patch(`/papers/${id}`, data);
 export const deletePaper = (id: number) => api.delete(`/papers/${id}`);

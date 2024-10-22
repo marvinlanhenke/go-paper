@@ -2,6 +2,7 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import PaperList from "./components/PaperList";
 import CreatePaper from "./components/CreatePaper";
+import EditPaper from "./components/EditPaper";
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<PaperList />} />
             <Route path="/create" element={<CreatePaper />} />
+            <Route path="/update/:id" element={<EditPaper />} />
           </Routes>
         </main>
         <footer className="text-gray-900 text-center p-4">
