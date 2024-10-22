@@ -38,6 +38,18 @@ func NewPaperHandler(logger *zap.SugaredLogger, repository *repository.Repositor
 	return &PaperHandler{logger: logger, repository: repository}
 }
 
+// Create creates a new paper
+//
+// @Summary Create a new paper
+// @Description Create a new paper with the input payload
+// @Tags papers
+// @Accept json
+// @Produce json
+// @Param paper body CreatePaperPayload true "Create Paper"
+// @Success 201 {object} repository.Paper
+// @Failure 400 {object} error
+// @Failure 500 {object} error
+// @Router /papers [post]
 func (h *PaperHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var payload CreatePaperPayload
 
@@ -64,11 +76,34 @@ func (h *PaperHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusCreated, paper)
 }
 
+// Read retrieves a specific paper by its ID.
+//
+// @Summary Get a Paper by ID
+// @Description Retrieve the details of a paper using its unique ID.
+// @Tags papers
+// @Accept json
+// @Produce json
+// @Param id path int true "Paper ID"
+// @Success 200 {object} repository.Paper
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
+// @Router /papers/{id} [get]
 func (h *PaperHandler) Read(w http.ResponseWriter, r *http.Request) {
 	paper := getPaperFromCtx(r)
 	utils.JSONResponse(w, http.StatusOK, paper)
 }
 
+// ReadAll retrieves all papers.
+//
+// @Summary Get All Papers
+// @Description Retrieve a list of all papers stored in the system.
+// @Tags papers
+// @Accept json
+// @Produce json
+// @Success 200 {array} repository.Paper
+// @Failure 500 {object} error
+// @Router /papers [get]
 func (h *PaperHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
 	papers, err := h.repository.Papers.ReadAll(r.Context())
 	if err != nil {
@@ -80,6 +115,20 @@ func (h *PaperHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, papers)
 }
 
+// Update modifies an existing paper by its ID.
+//
+// @Summary Update a Paper by ID
+// @Description Update the details of a paper using its unique ID.
+// @Tags papers
+// @Accept json
+// @Produce json
+// @Param id path int true "Paper ID"
+// @Param paper body handler.UpdatePaperPayload true "Update Paper"
+// @Success 200 {object} repository.Paper
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
+// @Router /papers/{id} [patch]
 func (h *PaperHandler) Update(w http.ResponseWriter, r *http.Request) {
 	paper := getPaperFromCtx(r)
 

@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/httprate"
 	"github.com/marvinlanhenke/go-paper/internal/handler"
 	"github.com/marvinlanhenke/go-paper/internal/repository"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -88,6 +89,10 @@ func (app *Application) registerRoutes() {
 				r.Delete("/", paperHandler.Delete)
 			})
 		})
+
+		r.Get("/swagger/*", httpSwagger.Handler(
+			httpSwagger.URL("/v1/swagger/doc.json"),
+		))
 	})
 }
 
