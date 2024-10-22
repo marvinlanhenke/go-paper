@@ -23,6 +23,16 @@ func (r *tagRepository) Create(ctx context.Context, tag *Tag) error {
 	return r.DB.WithContext(ctx).Create(tag).Error
 }
 
+func (r *tagRepository) Read(ctx context.Context, tagID int) (*Tag, error) {
+	var tag Tag
+
+	if err := r.DB.WithContext(ctx).First(&tag, tagID).Error; err != nil {
+		return nil, err
+	}
+
+	return &tag, nil
+}
+
 func (r *tagRepository) Delete(ctx context.Context, tagID int) error {
 	var tag Tag
 

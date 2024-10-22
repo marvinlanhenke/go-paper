@@ -50,6 +50,31 @@ func (h *tagHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusCreated, tag)
 }
 
+func (h *tagHandler) Read(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		h.logger.Errorw("failed to convert id param", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	tag, err := h.repository.Tags.Read(r.Context(), id)
+	if err != nil {
+		h.logger.Errorw("failed to read tag", "error", err)
+
+		if err == gorm.ErrRecordNotFound {
+			utils.JSONError(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, tag)
+}
+
 func (h *tagHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idParam)
