@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import PaperList from "./components/PaperList";
+import CreatePaper from "./components/CreatePaper";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ const App: React.FC = () => {
         <main className="flex-grow py-6">
           <Routes>
             <Route path="/" element={<PaperList />} />
+            <Route path="/create" element={<CreatePaper />} />
           </Routes>
         </main>
         <footer className="text-gray-900 text-center p-4">

@@ -9,20 +9,20 @@ const api = axios.create({
   },
 });
 
-export interface Paper {
-  id: number;
+export interface CreatePaper {
   title: string;
   description: string;
   url: string;
+}
+
+export interface Paper extends CreatePaper {
+  id: number;
   is_read: boolean;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string;
 }
 
 export const getPapers = () => api.get("/papers");
 export const getPaperById = (id: number) => api.get(`/papers/${id}`);
-export const createPaper = (data: Paper) => api.post("/papers", data);
+export const createPaper = (data: CreatePaper) => api.post("/papers", data);
 export const updatePaper = (id: number, data: Paper) =>
   api.patch(`/papers/${id}`, data);
 export const deletePaper = (id: number) => api.delete(`/papers/${id}`);
