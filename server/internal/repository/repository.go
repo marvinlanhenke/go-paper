@@ -7,17 +7,16 @@ import (
 )
 
 type Repository struct {
-	Tags interface {
-		Create(context.Context, *Tag) error
-		Read(context.Context, int) (*Tag, error)
-		ReadAll(context.Context) ([]Tag, error)
-		Update(context.Context, *Tag) error
-		Delete(context.Context, int) error
+	Papers interface {
+		Create(context.Context, *Paper) error
+		Read(context.Context, int) (*Paper, error)
+		ReadAll(context.Context) ([]Paper, error)
+		Update(context.Context, *Paper) error
 	}
 }
 
 func New(db *gorm.DB) *Repository {
 	return &Repository{
-		Tags: &tagRepository{DB: db},
+		Papers: &paperRepository{DB: db},
 	}
 }

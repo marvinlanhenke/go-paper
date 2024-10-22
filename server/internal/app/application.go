@@ -54,7 +54,7 @@ func (app *Application) setupDB() error {
 		app.logger.Errorw("error initializing database", "error", err)
 		return err
 	}
-	if err := db.AutoMigrate(&repository.Tag{}); err != nil {
+	if err := db.AutoMigrate(&repository.Paper{}); err != nil {
 		app.logger.Errorw("error migrating database", "error", err)
 		return err
 	}
@@ -69,17 +69,21 @@ func (app *Application) registerRoutes() {
 	version := app.config.version
 
 	healthCheckHandler := handler.NewHealthCheckHandler(env, version)
-	tagHandler := handler.NewTagHandler(app.logger, app.repository)
+	paperHandler := handler.NewPaperHandler(app.logger, app.repository)
 
 	app.router.Route("/v1", func(r chi.Router) {
 		r.Get("/health", healthCheckHandler.ServeHTTP)
 
-		r.Route("/tags", func(r chi.Router) {
-			r.Post("/", tagHandler.Create)
-			r.Get("/", tagHandler.ReadAll)
-			r.Get("/{id}", tagHandler.Read)
-			r.Patch("/{id}", tagHandler.Update)
-			r.Delete("/{id}", tagHandler.Delete)
+		r.Route("/papers", func(r chi.Router) {
+			r.Post("/", paperHandler.Create)
+			r.Get("/", paperHandler.ReadAll)
+
+			r.Route("/{id}", func(r chi.Router) {
+				r.Use(paperHandler.WithPaperContext)
+
+				r.Get("/", paperHandler.Read)
+				r.Patch("/", paperHandler.Update)
+			})
 		})
 	})
 }
