@@ -33,6 +33,16 @@ func (r *tagRepository) Read(ctx context.Context, tagID int) (*Tag, error) {
 	return &tag, nil
 }
 
+func (r *tagRepository) ReadAll(ctx context.Context) ([]Tag, error) {
+	var tags []Tag
+
+	if err := r.DB.WithContext(ctx).Find(&tags).Error; err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+}
+
 func (r *tagRepository) Delete(ctx context.Context, tagID int) error {
 	var tag Tag
 

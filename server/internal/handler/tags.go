@@ -75,6 +75,17 @@ func (h *tagHandler) Read(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, tag)
 }
 
+func (h *tagHandler) ReadAll(w http.ResponseWriter, r *http.Request) {
+	tags, err := h.repository.Tags.ReadAll(r.Context())
+	if err != nil {
+		h.logger.Errorw("failed to read all tags", "error", err)
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, tags)
+}
+
 func (h *tagHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idParam)
