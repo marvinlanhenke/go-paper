@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httprate"
 	"github.com/marvinlanhenke/go-paper/internal/handler"
 	"github.com/marvinlanhenke/go-paper/internal/repository"
 	"go.uber.org/zap"
@@ -42,6 +43,7 @@ func NewApplication(logger *zap.SugaredLogger, config *Config) (*Application, er
 	app.router.Use(middleware.Logger)
 	app.router.Use(middleware.Recoverer)
 	app.router.Use(middleware.Timeout(time.Second * 60))
+	app.router.Use(httprate.LimitByIP(100, time.Minute))
 
 	app.registerRoutes()
 
