@@ -1,7 +1,12 @@
 package app
 
 import (
+	"context"
+	"errors"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -42,6 +47,7 @@ func (app *Application) registerRoutes() {
 	})
 }
 
+// TODO: GracefulShutdown
 func (app *Application) Run() {
 	app.server = &http.Server{
 		Addr:         app.config.addr,
@@ -51,9 +57,25 @@ func (app *Application) Run() {
 		IdleTimeout:  time.Second * 60,
 	}
 
+	go func() {
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		<-quit
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+
+		if err := app.server.Shutdown(ctx); err != nil {
+			app.logger.Errorw("error while shutting down server", "error", err)
+		}
+	}()
+
 	app.logger.Infow("starting server", "addr", app.config.addr)
 
-	if err := app.server.ListenAndServe(); err != nil {
+	err := app.server.ListenAndServe()
+	if !errors.Is(err, http.ErrServerClosed) {
 		app.logger.Fatal(err)
 	}
+
+	app.logger.Infow("stopping server", "addr", app.config.addr)
 }
