@@ -7,15 +7,15 @@ import (
 	"go.uber.org/zap"
 )
 
-type HealthCheckHandler struct {
-	Logger *zap.SugaredLogger
+type healthCheckHandler struct {
+	logger *zap.SugaredLogger
 }
 
-func NewHealthCheckHandler(logger *zap.SugaredLogger) *HealthCheckHandler {
-	return &HealthCheckHandler{Logger: logger}
+func NewHealthCheckHandler(logger *zap.SugaredLogger) *healthCheckHandler {
+	return &healthCheckHandler{logger: logger}
 }
 
-func (h *HealthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *healthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
 		"status": "ok",
 	}
@@ -27,6 +27,6 @@ func (h *HealthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(&envelope{data}); err != nil {
-		h.Logger.Errorw("error while encoding JSON message", "error", err)
+		h.logger.Errorw("error while encoding JSON message", "error", err)
 	}
 }
