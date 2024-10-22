@@ -3,13 +3,12 @@ package repository
 import (
 	"context"
 
-	"github.com/marvinlanhenke/go-paper/internal/model"
 	"gorm.io/gorm"
 )
 
 type Repository struct {
 	Tags interface {
-		Create(context.Context, *model.Tag) error
+		Create(context.Context, *Tag) error
 	}
 }
 

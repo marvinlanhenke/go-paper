@@ -4,17 +4,15 @@ import (
 	"net/http"
 
 	"github.com/marvinlanhenke/go-paper/internal/utils"
-	"go.uber.org/zap"
 )
 
 type healthCheckHandler struct {
-	logger  *zap.SugaredLogger
 	env     string
 	version string
 }
 
-func NewHealthCheckHandler(logger *zap.SugaredLogger, env, version string) *healthCheckHandler {
-	return &healthCheckHandler{logger: logger, env: env, version: version}
+func NewHealthCheckHandler(env, version string) *healthCheckHandler {
+	return &healthCheckHandler{env: env, version: version}
 }
 
 func (h *healthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +26,5 @@ func (h *healthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Data any `json:"data"`
 	}
 
-	if err := utils.WriteJSON(w, http.StatusOK, &envelope{data}); err != nil {
-		h.logger.Errorw("error while writing JSON response", "error", err)
-	}
+	utils.JSONResponse(w, http.StatusOK, &envelope{data})
 }

@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/marvinlanhenke/go-paper/internal/handler"
-	"github.com/marvinlanhenke/go-paper/internal/model"
 	"github.com/marvinlanhenke/go-paper/internal/repository"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
@@ -55,7 +54,7 @@ func (app *Application) setupDB() error {
 		app.logger.Errorw("error initializing database", "error", err)
 		return err
 	}
-	if err := db.AutoMigrate(&model.Tag{}); err != nil {
+	if err := db.AutoMigrate(&repository.Tag{}); err != nil {
 		app.logger.Errorw("error migrating database", "error", err)
 		return err
 	}
@@ -69,10 +68,15 @@ func (app *Application) registerRoutes() {
 	env := app.config.env
 	version := app.config.version
 
-	healthCheckHandler := handler.NewHealthCheckHandler(app.logger, env, version)
+	healthCheckHandler := handler.NewHealthCheckHandler(env, version)
+	tagHandler := handler.NewTagHandler(app.logger, app.repository)
 
 	app.router.Route("/v1", func(r chi.Router) {
 		r.Get("/health", healthCheckHandler.ServeHTTP)
+
+		r.Route("/tags", func(r chi.Router) {
+			r.Post("/", tagHandler.Create)
+		})
 	})
 }
 

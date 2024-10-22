@@ -7,7 +7,6 @@ import (
 
 	"github.com/marvinlanhenke/go-paper/internal/handler"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 const (
@@ -15,12 +14,8 @@ const (
 	version = "0.0.1"
 )
 
-func createLogger() *zap.SugaredLogger {
-	return zap.Must(zap.NewProduction()).Sugar()
-}
-
 func TestHealthCheckHandler(t *testing.T) {
-	handler := handler.NewHealthCheckHandler(createLogger(), env, version)
+	handler := handler.NewHealthCheckHandler(env, version)
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/v1/health", nil)
