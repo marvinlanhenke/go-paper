@@ -47,7 +47,6 @@ func (app *Application) registerRoutes() {
 	})
 }
 
-// TODO: GracefulShutdown
 func (app *Application) Run() {
 	app.server = &http.Server{
 		Addr:         app.config.addr,
