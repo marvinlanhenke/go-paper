@@ -13,6 +13,15 @@ import (
 const addr = ":8080"
 
 func main() {
+	logger := zap.Must(zap.NewProduction()).Sugar()
+	defer func() {
+		if err := logger.Sync(); err != nil {
+			logger.Errorw("failed to sync logger", "error", err)
+		}
+	}()
+
+	healthCheckHandler := handler.NewHealthCheckHandler(logger)
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -21,15 +30,8 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/health", handler.HealthCheckHandler)
+		r.Get("/health", healthCheckHandler.ServeHTTP)
 	})
-
-	logger := zap.Must(zap.NewProduction()).Sugar()
-	defer func() {
-		if err := logger.Sync(); err != nil {
-			logger.Errorw("failed to sync logger", "error", err)
-		}
-	}()
 
 	srv := &http.Server{
 		Addr:         addr,
