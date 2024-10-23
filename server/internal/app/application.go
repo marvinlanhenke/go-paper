@@ -48,7 +48,7 @@ func NewApplication(logger *zap.SugaredLogger, config *Config) (*Application, er
 	app.router.Use(middleware.Timeout(time.Second * 60))
 	app.router.Use(httprate.LimitByIP(100, time.Minute))
 	app.router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{utils.GetString("CORS_ALLOWED_ORIGIN", "http://localhost:5173")},
+		AllowedOrigins:   []string{utils.GetString("CORS_ALLOWED_ORIGIN", "http://localhost:5173"), "http://localhost:4173"},
 		AllowedMethods:   []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},

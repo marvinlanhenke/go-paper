@@ -23,7 +23,7 @@ services:
     environment:
       - ENV=development
       - DB_ADDR=postgres://admin:admin@db:5432/gopaper?sslmode=disable
-      - CORS_ALLOWED_ORIGIN=http://localhost:5173
+      - CORS_ALLOWED_ORIGIN=http://localhost:4173
 
 volumes:
   db-data:
