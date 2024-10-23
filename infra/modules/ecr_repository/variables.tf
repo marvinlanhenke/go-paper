@@ -3,6 +3,12 @@ variable "repository_name" {
   type        = string
 }
 
+variable "force_delete" {
+  description = "whether to force delete the repository even if it contains objects"
+  type        = bool
+  default     = true
+}
+
 variable "image_tag_mutability" {
   description = "the image tag mutability setting"
   type        = string
