@@ -4,6 +4,11 @@ variable "bucket_name" {
   default     = "ml-sa-s3-static-site"
 }
 
+variable "force_destroy" {
+  description = "whether to force destroy the bucket even if it contains objects"
+  type        = bool
+  default     = true
+}
 
 variable "website_index_document" {
   description = "the index document for the website"
