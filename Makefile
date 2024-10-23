@@ -9,15 +9,19 @@ backend:
 	docker image prune -f && \
 	docker compose up -d
 
-.PHONY: frontend
-frontend:
+.PHONY: frontend-build
+frontend-build:
 	cd ./client && \
 	VITE_API_URL=$(API_URL) \
-	npm run build && \
+	npm run build
+
+.PHONY: frontend-preview
+frontend-preview:
+	cd ./client && \
 	npm run preview
 
 .PHONY: run-local
-run-local: backend frontend
+run-local: backend frontend-build frontend-preview
 
 
 .PHONY: upload-s3
