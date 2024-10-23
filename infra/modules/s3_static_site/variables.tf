@@ -1,7 +1,6 @@
 variable "bucket_name" {
   description = "the name of the S3 bucket"
   type        = string
-  default     = "ml-sa-s3-static-site"
 }
 
 variable "force_destroy" {
