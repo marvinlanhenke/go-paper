@@ -1,3 +1,5 @@
+BUCKET_NAME=ml-sa-s3-static-site
+
 .PHONY: docker
 docker:
 	docker compose down --remove-orphans && \
@@ -8,4 +10,4 @@ docker:
 
 .PHONY: upload-s3
 upload-s3:
-	aws s3 sync ./client/dist s3://ml-sa-s3-static-site/ --delete
+	aws s3 sync ./client/dist s3://$(BUCKET_NAME)/ --delete
