@@ -59,22 +59,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "ecs_task_role" {
-  name = "ml-sa-go-paper-${var.environment}-ecs-task-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      },
-      Action = "sts:AssumeRole"
-    }]
-  })
-
-}
-
 resource "aws_ecs_task_definition" "this" {
   family                   = "ml-sa-go-paper-${var.environment}-task"
   network_mode             = "awsvpc"
@@ -83,7 +67,6 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.memory
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([{
     name  = "ml-sa-go-paper-container"
