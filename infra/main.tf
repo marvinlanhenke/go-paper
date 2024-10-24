@@ -45,10 +45,10 @@ module "ecs" {
   private_subnets      = module.vpc.private_subnets
   alb_sg_id            = module.alb.alb_sg_id
   alb_target_group_arn = module.alb.alb_target_group_arn
-  container_image      = "${module.ecr_repository.repository_url}:latest"
+  container_image      = "${module.ecr.repository_url}:latest"
   environment_variables = {
     "DB_ADDR"             = "postgres://${var.db_username}:${var.db_password}@${module.rds.db_instance_endpoint}/gopaper?sslmode=require",
-    "CORS_ALLOWED_ORIGIN" = "http://${module.s3_static_site.s3_static_site_enpoint}"
+    "CORS_ALLOWED_ORIGIN" = "http://${module.s3.s3_static_site_enpoint}"
   }
 }
 

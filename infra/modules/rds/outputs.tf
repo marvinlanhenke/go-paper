@@ -12,8 +12,3 @@ output "db_instance_id" {
   description = "The identifier of the RDS instance."
   value       = aws_db_instance.this.id
 }
-
-output "db_credentials_secret_arn" {
-  description = "The ARN of the Secrets Manager secret containing DB credentials."
-  value       = aws_secretsmanager_secret.db_credentials.arn
-}
