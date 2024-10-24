@@ -31,6 +31,7 @@ frontend-push:
 .PHONY: frontend-preview
 frontend-preview:
 	cd $(FRONTEND_DIR) && \
+	VITE_API_URL=http://localhost:8080/v1 npm run build && \
 	npm run preview
 
 .PHONY: deploy

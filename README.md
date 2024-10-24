@@ -45,7 +45,6 @@ The architecture follows a 3-tier pattern for scalability and fault tolerance. D
    ```
 3. Build the frontend & preview
    ```bash
-   make frontend-build
    make frontend-preview
    ```
 
