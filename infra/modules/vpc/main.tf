@@ -9,7 +9,6 @@ resource "aws_vpc" "this" {
   }
 }
 
-// BUG: https://stackoverflow.com/questions/61265108/aws-ecs-fargate-resourceinitializationerror-unable-to-pull-secrets-or-registry
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id              = aws_vpc.this.id
   service_name        = "com.amazonaws.eu-central-1.ecr.api"
