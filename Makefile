@@ -32,3 +32,6 @@ frontend-push:
 frontend-preview:
 	cd $(FRONTEND_DIR) && \
 	npm run preview
+
+.PHONY: deploy
+deploy: frontend-build frontend-push backend-build backend-push
