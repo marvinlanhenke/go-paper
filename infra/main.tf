@@ -48,7 +48,7 @@ module "ecs" {
   container_image      = "${module.ecr.repository_url}:latest"
   environment_variables = {
     "DB_ADDR"             = "postgres://${var.db_username}:${var.db_password}@${module.rds.db_instance_endpoint}/gopaper?sslmode=require",
-    "CORS_ALLOWED_ORIGIN" = "http://${module.s3.s3_static_site_enpoint}"
+    "CORS_ALLOWED_ORIGIN" = "http://${module.s3.s3_static_site_endpoint}"
   }
 }
 
