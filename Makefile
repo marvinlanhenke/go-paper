@@ -6,8 +6,6 @@ BUCKET_NAME := ml-sa-s3-static-site
 AWS_PROFILE := default
 AWS_REGION := eu-central-1
 
-API_URL := http://localhost:8080/v1
-
 .PHONY: backend-build
 backend-build:
 	cd $(BACKEND_DIR) && \
@@ -22,15 +20,15 @@ backend-push:
 
 .PHONY: frontend-build
 frontend-build:
+	API_URL=http://$$(cd $(INFRA_DIR) && terraform output -raw alb_dns)/v1 ; \
 	cd $(FRONTEND_DIR) && \
-	VITE_API_URL=$(API_URL) \
-	npm run build
+	VITE_API_URL=$$API_URL npm run build
+
+.PHONY: frontend-push
+frontend-push:
+	aws s3 sync ./client/dist s3://$(BUCKET_NAME)/ --delete
 
 .PHONY: frontend-preview
 frontend-preview:
 	cd $(FRONTEND_DIR) && \
 	npm run preview
-
-.PHONY: upload-s3
-upload-s3:
-	aws s3 sync ./client/dist s3://$(BUCKET_NAME)/ --delete
