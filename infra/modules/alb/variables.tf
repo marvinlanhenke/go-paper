@@ -1,21 +1,14 @@
 variable "environment" {
-  description = "deployment environment"
+  description = "The current deployment environment"
   type        = string
-  default     = "production"
 }
 
 variable "subnets" {
-  description = "list of public subnet IDs where the ALB will be deployed"
+  description = "A list of public subnet IDs where the ALB will be deployed"
   type        = list(string)
 }
 
 variable "vpc_id" {
-  description = "the VPC id"
+  description = "The VPC id"
   type        = string
-}
-
-variable "idle_timeout" {
-  description = "idle timeout for the ALB in seconds"
-  type        = number
-  default     = 60
 }

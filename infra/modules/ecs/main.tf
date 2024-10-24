@@ -1,6 +1,6 @@
 resource "aws_security_group" "ecs_service_sg" {
-  name        = "ml-sa-go-paper-${var.environment}-ecs-sg"
   description = "Security group for ECS Fargate service"
+  name        = "ml-sa-go-paper-${var.environment}-ecs-sg"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -89,7 +89,7 @@ resource "aws_ecs_task_definition" "this" {
       logDriver = "awslogs"
       options = {
         "awslogs-group"         = aws_cloudwatch_log_group.ecs_logs.name
-        "awslogs-region"        = "eu-central-1"
+        "awslogs-region"        = var.region
         "awslogs-stream-prefix" = "ecs"
       }
     }

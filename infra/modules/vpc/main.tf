@@ -5,7 +5,7 @@ resource "aws_vpc" "this" {
 
   tags = {
     Name        = "vpc-${var.vpc_cidr}"
-    Environment = "Production"
+    Environment = var.environment
   }
 }
 

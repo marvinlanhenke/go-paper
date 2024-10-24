@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "deployment environment"
+  type        = string
+}
+
 variable "repository_name" {
   description = "name of the ECR repository"
   type        = string

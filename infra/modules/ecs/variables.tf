@@ -1,48 +1,52 @@
-variable "vpc_id" {
-  description = "the VPC id"
+variable "region" {
+  description = "AWS region"
   type        = string
 }
 
 variable "environment" {
   description = "deployment environment"
   type        = string
-  default     = "production"
 }
 
-variable "environment_variables" {
-  description = "environment variables for the container"
-  type        = map(string)
-  default     = {}
+variable "vpc_id" {
+  description = "The VPC id"
+  type        = string
 }
 
 variable "private_subnets" {
-  description = "list of private subnet IDs where ECS tasks will be deployed"
+  description = "A list of private subnet IDs where ECS tasks will be deployed"
   type        = list(string)
 }
 
 variable "alb_target_group_arn" {
-  description = "the ARN of the ALB target group"
+  description = "The ARN of the ALB target group"
   type        = string
 }
 
 variable "alb_sg_id" {
-  description = "the ID of the ALB security group"
+  description = "The ID of the ALB security group"
   type        = string
 }
 
 variable "container_image" {
-  description = "the docker image for the ECS task"
+  description = "The docker image for the ECS task"
   type        = string
 }
 
+variable "environment_variables" {
+  description = "Environment variables for the container"
+  type        = map(string)
+  default     = {}
+}
+
 variable "container_port" {
-  description = "the port on which the container listens"
+  description = "The port on which the container listens"
   type        = number
   default     = 8080
 }
 
 variable "desired_count" {
-  description = "desired number of ECS tasks"
+  description = "Desired number of ECS tasks"
   type        = number
   default     = 2
 }

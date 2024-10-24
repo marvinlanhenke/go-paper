@@ -1,5 +1,5 @@
 resource "aws_security_group" "rds_sg" {
-  name        = "ml-sa-go-paper-production-rds-sg"
+  name        = "ml-sa-go-paper-${var.environment}-rds-sg"
   description = "Security group for RDS PostgreSQL instance"
   vpc_id      = var.vpc_id
 
@@ -8,7 +8,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = var.vpc_security_group_ids
+    security_groups = var.security_group_ids
   }
 
   egress {
@@ -23,24 +23,6 @@ resource "aws_security_group" "rds_sg" {
     Name        = "ml-sa-go-paper-${var.db_name}-rds-sg"
     Environment = var.environment
   }
-}
-
-resource "aws_secretsmanager_secret" "db_credentials" {
-  name        = "ml-sa-go-paper-${var.db_name}-credentials"
-  description = "Credentials for the ml-sa-go-paper PostgreSQL database"
-
-  tags = {
-    Name        = "ml-sa-go-paper-${var.db_name}-credentials"
-    Environment = var.environment
-  }
-}
-
-resource "aws_secretsmanager_secret_version" "db_credentials_version" {
-  secret_id = aws_secretsmanager_secret.db_credentials.id
-  secret_string = jsonencode({
-    username = var.db_username
-    password = var.db_password
-  })
 }
 
 resource "aws_db_subnet_group" "this" {
@@ -73,12 +55,10 @@ resource "aws_db_instance" "this" {
   maintenance_window         = "Mon:05:00-Mon:06:00"
   backup_retention_period    = var.backup_retention_period
   delete_automated_backups   = true
-  final_snapshot_identifier  = "ml-sa-go-paper-${var.db_name}-final-snapshot"
-  skip_final_snapshot        = false
+  skip_final_snapshot        = true
 
   tags = {
     Name        = "ml-sa-go-paper-${var.db_name}-db-instance"
     Environment = var.environment
   }
-
 }

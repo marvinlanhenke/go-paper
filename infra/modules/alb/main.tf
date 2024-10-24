@@ -1,6 +1,6 @@
-resource "aws_security_group" "alb-sg" {
+resource "aws_security_group" "alb_sg" {
+  description = "Security group for the ALB"
   name        = "ml-sa-go-paper-alb-sg"
-  description = "security group for the ALB"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -37,8 +37,8 @@ resource "aws_lb" "this" {
   name                       = "ml-sa-go-paper-alb"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = [aws_security_group.alb-sg.id]
-  idle_timeout               = var.idle_timeout
+  security_groups            = [aws_security_group.alb_sg.id]
+  idle_timeout               = 60
   subnets                    = var.subnets
   enable_deletion_protection = false
 

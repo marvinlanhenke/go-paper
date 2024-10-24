@@ -6,7 +6,6 @@ variable "vpc_id" {
 variable "environment" {
   description = "The deployment environment"
   type        = string
-  default     = "production"
 }
 
 variable "private_subnets" {
@@ -14,9 +13,14 @@ variable "private_subnets" {
   type        = list(string)
 }
 
-variable "vpc_security_group_ids" {
+variable "security_group_ids" {
   description = "List of security group ids"
   type        = list(string)
+}
+
+variable "db_name" {
+  description = "The name of the default database to create."
+  type        = string
 }
 
 variable "db_username" {
@@ -29,13 +33,6 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
-
-variable "db_name" {
-  description = "The name of the default database to create."
-  type        = string
-  default     = "myappdb"
-}
-
 
 variable "db_instance_class" {
   description = "The instance type for the RDS instance"

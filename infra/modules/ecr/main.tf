@@ -9,6 +9,6 @@ resource "aws_ecr_repository" "this" {
 
   tags = {
     Name        = var.repository_name
-    Environment = "Production"
+    Environment = var.environment
   }
 }
